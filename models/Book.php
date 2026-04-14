@@ -17,25 +17,26 @@ class Book {
     public function query($where, $params)
     {
         $database = new Database(config('database'));
+
         return $database->query(
             query: "
-                select
-                    b.id, 
-                    b.title,
-                    b.author,
-                    b.description,
-                    b.release_year,
-                    b.image,
-                    round(sum(e.note) / 5.0) as evaluation_note,
-                    count(e.id) as evaluation_count
-                from books b
-                left join evaluations e on e.book_id = b.id
-                where b.id = :id
-                group by
-                    b.id, b.title, b.author, b.description, b.release_year, b.image
-            ",
+            select
+                b.id, 
+                b.title,
+                b.author,
+                b.description,
+                b.release_year,
+                b.image,
+                round(sum(e.note) / 5.0) as evaluation_note,
+                count(e.id) as evaluation_count
+            from books b
+            left join evaluations e on e.book_id = b.id
+            where $where
+            group by
+                b.id, b.title, b.author, b.description, b.release_year, b.image
+        ",
             class: Book::class,
-            params: ['id' => $_GET['id']]
+            params: $params
         );
     }
 

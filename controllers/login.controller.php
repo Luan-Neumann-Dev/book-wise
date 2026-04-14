@@ -35,6 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         flash()->push('mensagem', "Seja bem-vindo {$user->name}!");
         header("Location: /");
         exit();
+    }  else {
+        flash()->push('validations_login', ['Usuário ou senha estão incorretos!']);
+        header("Location: /login");
+        exit();
     }
 }
 

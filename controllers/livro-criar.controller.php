@@ -27,14 +27,19 @@ if ($validation->failed()) {
     exit();
 }
 
-$newName = md5(rand());
-$extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-$image = "images/$newName.$extension";
-move_uploaded_file($_FILES['image']['tmp_name'], $image);
+$image = null;
+
+if (!empty($_FILES['image']['name'])) {
+    $newName = md5(rand());
+    $extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+    $image = "public/images/$newName.$extension";
+
+    move_uploaded_file($_FILES['image']['tmp_name'], $image);
+}
 
 $database->query(
     query: "insert into books (title, author, description, release_year, user_id, image)
-values (':title', ':author', ':description', ':release_year', ':user_id', ':image');",
+values (:title, :author, :description, :release_year, :user_id, :image);",
     params: compact('title', 'author', 'description', 'release_year', 'user_id', 'image')
 );
 
